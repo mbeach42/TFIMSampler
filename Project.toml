@@ -1,0 +1,21 @@
+name = "TFIMSampler"
+uuid = "d7f32b71-41a5-46cd-b9ba-73fc783c5fc1"
+authors = ["mbeach42 <mbeachphysics@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+BitBasis = "50ba71b6-fa0f-514d-ae9a-0916efc90dcf"
+DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
