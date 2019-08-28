@@ -63,15 +63,15 @@ function run!(;L=4, h=1.0, N=100, file=false)
         push!(configs, copy(model.x))
         if file ≠ false
             open(file * ".txt", "a") do f
-                writedlm(f, Int.(model.x'), ",")
+                writedlm(f, Int.(model.x'))
             end
         end
     end
     Amps = countmap(configs) |> sort
     amps = normalize(Amps.vals)
-    if file ≠ false
-        writedlm(file * "-amps.txt", amps)
-    end
+    # if file ≠ false
+        # writedlm(file * "-amps.txt", amps)
+    # end
     return configs, amps
 end
 
