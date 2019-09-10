@@ -13,8 +13,8 @@ println("N is $N")
 
 
 # make directory if none exists
-dir = "../data/"
+dir = "../testing_data/"
 mkpath(dir)
-file = dir * "L-$L-h-$h-N-$N" 
+file = dir * "L-$L-h-$h" 
 
 @time configs, amps = run!(L=L, h=h, N=N, file=file)

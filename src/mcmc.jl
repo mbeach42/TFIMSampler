@@ -67,12 +67,12 @@ function run!(;L=4, h=1.0, N=100, file=false)
             end
         end
     end
-    Amps = countmap(configs) |> sort
-    amps = normalize(Amps.vals)
+    # Amps = countmap(configs) |> sort
+    # amps = normalize(Amps.vals)
     # if file ≠ false
         # writedlm(file * "-amps.txt", amps)
     # end
-    return configs, amps
+    return configs, zeros(1)
 end
 
 run!(N=1)
