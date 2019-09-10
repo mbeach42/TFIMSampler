@@ -52,7 +52,6 @@ function get_prob(x::BitArray, L=4, h=1)
     end
     C = buildC(L)[1:2:end, 2:2:end]
     Z = det(I+C) #|> sqrt
-    x = bitarray(i, L)
     f2 = C[x .> 0, x .> 0]
     p = det(f2) / Z
     return p
