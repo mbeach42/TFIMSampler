@@ -1,54 +1,66 @@
 using TFIMSampler
 
-function clean()
+function clean(L)
 
-    for L in Int.(2 .^ collect(2:7))
         println("\nL is $L")
-        N = 10000
         h = 1.0
 
         # Read old data
         h = round(h, digits=2)
-        dir = "../data/L-$L/h-$h/"
+        dir = "data/L-$L/h-$h/"
 
         file = dir * "r-1.txt" 
         train = readdlm(file)
+        logZ = TFIMSampler.get_prob(train[1,:]|> BitArray, L, h)[2]
+        println("log Z is", logZ)
         display(size(train))
 
-        for r in 1:50
+        for r in 2:5
             file = dir * "r-$r.txt" 
             train = vcat(train, readdlm(file))
         end
-        dir2 = "../cleaned_data/L-$L/h-$h/train/"
+        display(size(train))
+        dir2 = "cleaned_data/L-$L/h-$h/train/"
         mkpath(dir2)
-        writedlm(dir2 * "data_train.txt", train)
+        writedlm(dir2 * "data_train.txt", Int.(train))
 
         un = unique(train, dims=1)
+        
         display(size(un))
-        ps = [TFIMSampler.get_prob(un[i,:]|> BitArray , L, h) for i in 1:size(un,1)]
+        un_ps = [TFIMSampler.get_prob(un[i,:]|> BitArray , L, h)[1] for i in 1:size(un,1)]
+        ps = [TFIMSampler.get_prob(train[i,:]|> BitArray , L, h)[1] for i in 1:size(train,1)]
+        println("Sum of ps is ", sum(exp.(ps)))
+        println("Sum of ps is ", sum(exp.(un_ps)))
 
-        writedlm(dir2 * "unique_train.txt", un)
+        writedlm(dir2 * "unique_train.txt", Int.(un))
+        writedlm(dir2 * "unique_logps_train.txt", un_ps)
         writedlm(dir2 * "logps_train.txt", ps)
+        writedlm(dir2 * "logZ.txt", logZ)
 
 
 
-        # TEST DATA
+        # # TEST DATA
         file = dir * "r-51.txt" 
         test = readdlm(file)
 
-        for r in 51:100
+        for r in 52:55
             file = dir * "r-$r.txt" 
             test = vcat(test, readdlm(file))
         end
-        dir3 = "../cleaned_data/L-$L/h-$h/test/"
-        mkpath(dir3)
-        writedlm(dir3 * "data_test.txt", test)
+        dir2 = "cleaned_data/L-$L/h-$h/test/"
+        mkpath(dir2)
+        writedlm(dir2 * "data_test.txt", Int.(test))
         un = unique(test, dims=1)
-        ps = [TFIMSampler.get_prob(un[i,:]|> BitArray , L, h) for i in 1:size(un,1)]
+        un_ps = [TFIMSampler.get_prob(un[i,:]|> BitArray , L, h)[1] for i in 1:size(un,1)]
+        ps = [TFIMSampler.get_prob(train[i,:]|> BitArray , L, h)[1] for i in 1:size(test,1)]
+        println("Sum of ps is ", sum(exp.(ps)))
+        println("Sum of ps is ", sum(exp.(un_ps)))
 
-        writedlm(dir3 * "unique_test.txt", un)
-        writedlm(dir3 * "logps_test.txt", ps)
+        writedlm(dir2 * "unique_train.txt", Int.(un))
+        writedlm(dir2 * "unique_logps_train.txt", un_ps)
+        writedlm(dir2 * "logps_train.txt", ps)
+        writedlm(dir2 * "logZ.txt", logZ)
 
-    end
 end
-clean()
+
+clean(4)

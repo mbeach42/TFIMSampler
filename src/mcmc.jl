@@ -34,10 +34,30 @@ function DQMC(L::Int, h::Float64)
     DQMC(L, h, falses(L), F, invF)
 end
 
+# function fast_update!(x::AbstractArray, F::Matrix, L::Int, h::Float64)
+    # x2 = copy(x)
+    # old_weight = F[x.>0, x.>0] |> det
+    # # r = sample(1:L, rand(1:L), replace = false)
+    # r = rand(1:L)
+    # # @. x2[r] = !x[r]
+    # x2[r] = !x[r]
+    # new_weight = F[x2.>0, x2.>0] |> det
+    # ratio = new_weight/old_weight
+
+    # B = F[x.>0,r]
+    # newratio = 1 + inv(F[x.>0, x.>0])[r,r]#B'*inv(F[x.>0, x.>0])*B
+
+    # println("old ratio - new ratio", ratio - newratio)
+
+    # if rand() < min(1, ratio)
+        # x .= x2
+    # end
+# end
+
 function fast_update!(x::AbstractArray, F::Matrix, L::Int, h::Float64)
     x2 = copy(x)
     old_weight = F[x.>0, x.>0] |> det
-    r = sample(1:L, rand(1:L), replace = false)
+    r = rand(1:L)
     @. x2[r] = !x[r]
     new_weight = F[x2.>0, x2.>0] |> det
     ratio = new_weight/old_weight

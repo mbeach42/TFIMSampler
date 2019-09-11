@@ -54,5 +54,6 @@ function get_prob(x::BitArray, L=4, h=1)
     Z = det(I+C) #|> sqrt
     f2 = C[x .> 0, x .> 0]
     logp = log(det(f2)) - log(Z)
-    return logp
+    # logp = det(f2)/Z
+    return logp, log(Z)
 end

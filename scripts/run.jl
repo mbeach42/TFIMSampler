@@ -13,7 +13,7 @@ println("N is $N")
 
 
 # make directory if none exists
-dir = "../testing_data/"
+dir = "../new_data/"
 mkpath(dir)
 file = dir * "L-$L-h-$h" 
 
