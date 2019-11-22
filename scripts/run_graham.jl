@@ -27,5 +27,4 @@ dir = "/scratch/mbeach/nov22_tfim_data/L-$L/h-$h/"
 mkpath(dir)
 file = dir * "r-$r" 
 
-@time configs, amps = run!(L=L, h=h, N=N, file=file)
-@time configs = TFIMSampler.sample(L=L, hh=, N=N, file=file)
+@time configs = TFIMSampler.sample(L=L, h=h, N=N, file=file)
