@@ -9,7 +9,7 @@ println("h is $h")
 println("N is $N")
 
 # pre-compile once 
-@time configs, amps = run!(L=2, h=1.0, N=1)
+# @time configs, amps = run!(L=2, h=1.0, N=1)
 
 
 # make directory if none exists
@@ -17,4 +17,4 @@ dir = "../new_data/"
 mkpath(dir)
 file = dir * "L-$L-h-$h" 
 
-@time configs, amps = run!(L=L, h=h, N=N, file=file)
+@time configs = sample(L=L, h=h, N=N, file=file)
