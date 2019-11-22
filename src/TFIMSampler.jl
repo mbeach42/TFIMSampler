@@ -1,14 +1,18 @@
 module TFIMSampler
 
-using LinearAlgebra
 using BitBasis
 using DelimitedFiles
 using ProgressMeter
+using Random
+using StatsBase
+using LinearAlgebra
+using SparseArrays
+
 set_zero_subnormals(true)
 
-include("exact.jl")
-# include("mcmc.jl")
+include("new.jl")
+include("mcmc.jl")
 
-# export amplitudes, exact_wf, run!, DQMC, pairing_function, sweep!, fast_update!
+export sample, DQMC, pairing, sweep!, fast_update!
 
 end # module 
