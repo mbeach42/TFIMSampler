@@ -17,4 +17,4 @@ dir = "../new_data/"
 mkpath(dir)
 file = dir * "L-$L-h-$h" 
 
-@time configs = sample(L=L, h=h, N=N, file=file)
+@time configs = TFIMSampler.sample(L=L, h=h, N=N, file=file)
