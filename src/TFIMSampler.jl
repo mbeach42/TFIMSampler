@@ -13,6 +13,6 @@ set_zero_subnormals(true)
 include("new.jl")
 include("mcmc.jl")
 
-export sample, DQMC, pairing, sweep!, fast_update!
+export sample, DQMC, pairing, sweep!, fast_update!, get_probs, get_prob, get_all_probs
 
 end # module 

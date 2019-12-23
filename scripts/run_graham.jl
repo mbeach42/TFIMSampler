@@ -1,7 +1,10 @@
 using TFIMSampler
 
 N = 10^4
-Ls = 2 .^ collect(2:10)
+# Ls = 2 .^ collect(2:10)
+
+Ls = [1024]
+
 # hs = 0.1*collect(1:10)
 hs = [0.5, 0.9, 1.0, 1.1, 2.0]
 # hs = [1.0]
@@ -23,7 +26,7 @@ println("N is $N")
 
 # make directory if none exists
 h = round(h, digits=2)
-dir = "/scratch/mbeach/nov22_tfim_data/L-$L/h-$h/"
+dir = "/scratch/mbeach/nov23_tfim_data/L-$L/h-$h/"
 mkpath(dir)
 file = dir * "r-$r" 
 
