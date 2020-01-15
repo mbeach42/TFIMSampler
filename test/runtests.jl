@@ -46,7 +46,6 @@ function test_mc(L, h)
     amps = filter(x->40506903398877536 > x > -40506031398877536, amps.vals) |> sort
     amps = amps / (2L)
 
-ti
     amps_exact *= N
     amps_exact = filter(x->x > 2, amps_exact) |> sort
     amps_exact = round.(amps_exact, digits = 1) 
