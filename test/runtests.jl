@@ -63,7 +63,7 @@ end
     test_mc(4, 1.0)
     test_mc(4, 2.0)
     test_mc(4, 0.21)
-    test_mc(16, 1.0)
+    # test_mc(16, 1.0)
 end
 
-test_mc(32, 1.0)
+# test_mc(32, 1.0)
