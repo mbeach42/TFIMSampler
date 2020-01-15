@@ -55,7 +55,7 @@ function clean(L;name="train", r=1, h=1.0)
 end
 
 clean(4, name="train", r=1)
-for L in [8, 16, 32, 64, 128, 256]
+for L in [8, 16, 32]
     println()
     clean(L, name="train", r=1)
     clean(L, name="test", r=11)

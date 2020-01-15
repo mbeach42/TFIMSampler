@@ -21,9 +21,11 @@ function test_ed(h)
     gs_exact = normalize(psis[:,1].^2, 1)
 
     M = TFIMSampler.pairing(L, h)
-    amps = TFIMSampler.get_amplitudes(M)
+    unnormalizedamps, amps = TFIMSampler.get_all_probs(M)
 
     bits = [bitarray(i, L) for i in 0:2^L - 1]
+    display(gs_exact)
+    display(amps)
     # display(hcat(bits, amps, gs_exact))
     @test isapprox(gs_exact, amps; atol = 1e-5)
 end
@@ -34,28 +36,34 @@ end
 #     test_ed(0.21)
 # end
 
-configs = TFIMSampler.sample()
+# configs = TFIMSampler.sample()
 
 function test_mc(L, h)
     N = 10^4
     bits = [bitarray(i, L) for i in 0:2^L - 1]
-
     configs = TFIMSampler.sample(L = L, h = h, N = N)# |> sort
     amps = countmap(configs)
     amps = filter(x->40506903398877536 > x > -40506031398877536, amps.vals) |> sort
+    amps = amps / (2L)
 
-    M = TFIMSampler.pairing(L, h)
-    amps_exact = TFIMSampler.get_amplitudes(M) |> sort
+ti
     amps_exact *= N
     amps_exact = filter(x->x > 2, amps_exact) |> sort
     amps_exact = round.(amps_exact, digits = 1) 
-    display(amps)
-    display(amps_exact)
-    display(hcat(amps, amps_exact))
 
+    Z = sum(amps)
+    Z2 = sum(amps_exact)
+
+    display(hcat(amps/Z, amps_exact/Z2))
+    @test isapprox(amps/Z, amps_exact/Z2; atol = 1e-2)
 end
 
 
-# test_mc(4, 1.0)
-# test_mc(4, 2.0)
-test_mc(4, 0.6)
+@testset "MCMC test" begin
+    test_mc(4, 1.0)
+    test_mc(4, 2.0)
+    test_mc(4, 0.21)
+    test_mc(16, 1.0)
+end
+
+test_mc(32, 1.0)
