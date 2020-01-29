@@ -17,16 +17,23 @@ function pairing(L, h)
 end
 
 function get_prob(x::BitVector, M::Matrix)
-    amp = logdet(M[x .> 0, x .> 0] + eps() * I)
+    amp = log(abs.(det(M[x .> 0, x .> 0])))
     return amp
 end
 
 function get_all_probs(M::Matrix)
     L = size(M, 1)
-    logZ = logdet(M)
+    logZ = log(abs(det(M)))
     x = i->bitarray(i, L)
     amps = [get_prob(x(i), M) for i in 0:2^L - 1]
     amps = exp.(amps)
     amps2 = normalize(amps, 1)
     return round.(amps, digits = 7), round.(amps2, digits = 7)
 end
+
+# for L in [2, 4,8,16,20, 32]
+#     P = pairing(L, 1.0)
+#     Z1 = logdet(I + P)
+#     Z2 = log(sum(get_all_probs(P)[1]))                                                   
+#     println("L is $L Z is $Z1 and $Z2")
+# end
