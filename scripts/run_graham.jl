@@ -3,10 +3,10 @@ using TFIMSampler
 N = 10^4
 # Ls = 2 .^ collect(2:10)
 
-Ls = [1024]
+Ls = [4,8,16,32,64,128]
 
 # hs = 0.1*collect(1:10)
-hs = [0.5, 0.9, 1.0, 1.1, 2.0]
+hs = [1.0]
 # hs = [1.0]
 repeats = [i for i in 1:20]
 
@@ -26,8 +26,8 @@ println("N is $N")
 
 # make directory if none exists
 h = round(h, digits=2)
-dir = "/scratch/mbeach/nov23_tfim_data/L-$L/h-$h/"
+dir = "/scratch/mbeach/TFIM_samples/PBC/L-$L/h-$h/"
 mkpath(dir)
-file = dir * "r-$r" 
+file = dir * "run-$r" 
 
 @time configs = TFIMSampler.sample(L=L, h=h, N=N, file=file)

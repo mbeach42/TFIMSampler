@@ -1,5 +1,6 @@
 half(L) = div(L - 1, 2)
 
+logZ(M::Matrix) = logdet(I + M)
 Z(M::Matrix) = det(I + M)
 
 function pairing(L, h)

@@ -13,8 +13,8 @@ function clean(L;name="train", r=1, h=1.0)
     dir = "/scratch/mbeach/nov22_tfim_data/L-$L/h-$h/"
 
     M = pairing(L, h)
-    # logZ = logdet(M)
-    # @info "log Z is $logZ"
+    logZ = TFIMSampler.logZ(M)
+    @info "log Z is $logZ"
 
     file = dir * "r-$r.txt" 
     train = readdlm(file)
@@ -35,7 +35,7 @@ function clean(L;name="train", r=1, h=1.0)
     un_ps = [TFIMSampler.get_prob(un[i,:]|> BitArray, M) for i in 1:size(un,1)]
     ps = [TFIMSampler.get_prob(train[i,:]|> BitArray, M) for i in 1:size(train,1)]
 
-    logZ = exp.(un_ps) |> sum  |> log
+    # logZ = exp.(un_ps) |> sum  |> log
     @info "logZ is approx. $logZ"
     # @info "log Z of ps is ", log(sum(exp.(ps)))
     # @info "log Z of ps is $(logsumexp(ps))"
@@ -55,7 +55,7 @@ function clean(L;name="train", r=1, h=1.0)
 end
 
 clean(4, name="train", r=1)
-for L in [8, 16, 32]
+for L in [8, 16, 32, 64, 128, 256]
     println()
     clean(L, name="train", r=1)
     clean(L, name="test", r=11)
