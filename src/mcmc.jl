@@ -13,7 +13,12 @@ end
 function DQMC(L::Int, h::Float64)
     F = pairing(L, h)
     invF = inv(F)
-    DQMC(L, h, falses(L), F, invF)
+    if rand() > 0.5
+        init_x = falses(L)
+    else
+        init_x = trues(L)
+    end
+    DQMC(L, h, init_x, F, invF)
 end
 
 function fast_update!(x::AbstractArray, F::Matrix, L::Int, h::Float64)
@@ -44,7 +49,7 @@ function sweep!(x::AbstractArray, F::Matrix, L::Int, h::Float64)
     end
 end
 
-function sample(;L = 4, h = 1.0, N = 100, file = false)
+function single_sample(;L = 4, h = 1.0, N = 100, file = false)
     model = DQMC(L, h)
     configs = [] #Vector{BitVector}
     @showprogress 1 "warming up..." for i in 1:N
@@ -58,6 +63,15 @@ function sample(;L = 4, h = 1.0, N = 100, file = false)
                 writedlm(f, Int.(model.x'))
             end
         end
+    end
+    return configs
+end
+
+function sample(;nrepeats=4, L = 4, h = 1.0, N = 100, file = false)
+    nrepeats = 2 * L
+    configs = single_sample(L=L, h=h, N=N, file=file)
+    for i in 1:nrepeats-1
+        configs = vcat(single_sample(L=L, h=h, N=N, file=file), configs)
     end
     return configs
 end
