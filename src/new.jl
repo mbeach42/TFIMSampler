@@ -1,5 +1,7 @@
 half(L) = div(L - 1, 2)
 
+Z(M::Matrix) = det(I + M)
+
 function pairing(L, h)
     E(k) = sqrt(1 + h^2 + 2h * cospi((2k + 1) / L))
     ζ(k) = - (h + cospi((2k + 1) / L))
@@ -15,7 +17,7 @@ function pairing(L, h)
 end
 
 function get_prob(x::BitVector, M::Matrix)
-    amp = logdet(M[x .> 0, x .> 0] + eps()*I)
+    amp = logdet(M[x .> 0, x .> 0] + eps() * I)
     return amp
 end
 
@@ -26,5 +28,5 @@ function get_all_probs(M::Matrix)
     amps = [get_prob(x(i), M) for i in 0:2^L - 1]
     amps = exp.(amps)
     amps2 = normalize(amps, 1)
-    return amps, amps2
+    return round.(amps, digits = 7), round.(amps2, digits = 7)
 end
