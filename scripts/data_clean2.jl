@@ -20,7 +20,7 @@ function clean(L;name="train", r=1, h=1.0)
     train = readdlm(file)
     @info "Original training set size : $(size(train))"
 
-    for R in r+1:r+5
+    for R in r+1:r+4
         file = dir * "r-$R.txt" 
         train = vcat(train, readdlm(file))
     end
@@ -35,15 +35,15 @@ function clean(L;name="train", r=1, h=1.0)
     un_ps = [TFIMSampler.get_prob(un[i,:]|> BitArray, M) for i in 1:size(un,1)]
     ps = [TFIMSampler.get_prob(train[i,:]|> BitArray, M) for i in 1:size(train,1)]
 
-    logZ = logsumexp(ps)
-    @info "log Z is approx. $logZ"
+    logZ = exp.(un_ps) |> sum  |> log
+    @info "logZ is approx. $logZ"
     # @info "log Z of ps is ", log(sum(exp.(ps)))
     # @info "log Z of ps is $(logsumexp(ps))"
     # @info "Sum of ps is ", sum(exp.(ps))"
-    ps = [ps[i] - logZ for i in 1:size(train,1)]
+    ps = [ps[i] - logZ for i in 1:size(train,1)] 
     un_ps = [un_ps[i] - logZ for i in 1:size(un,1)]
     # @info ("log Z is approx. ", exp(logZ))
-    @info "Sum of ps is $(sum(exp.(ps)))"
+    @info "Sum of ps is $(sum(exp.(un_ps)))"
     # println("Sum of ps is ", sum(exp.(un_ps)))
 
     writedlm(dir2 * "data_$name.txt", Int.(train))
