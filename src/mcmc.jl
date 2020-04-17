@@ -22,8 +22,6 @@ function DQMC(L::Int, h::Float64)
 end
 
 function fast_update!(x::AbstractArray, F::Matrix, L::Int, h::Float64)
-    # println(" ")
-    # display(x')
     old_weight = F[x .> 0, x .> 0] |> det
     # r = sample(1:L, rand(1:L), replace = false)
     r = rand(1:L, rand(2:2:L))

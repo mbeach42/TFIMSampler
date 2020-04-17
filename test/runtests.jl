@@ -1,43 +1,57 @@
-# using TFIMSampler
-
+using Test
+using TFIMSampler
 using StatsBase
 using LinearAlgebra
-# using BitBasis
-# using ProgressMeter
+using BitBasis
+using ProgressMeter
 
-# using Test
-function ED(h)
-    Z = [0 1.0 ; 1 0]
-    X = [1 0.0 ; 0 -1]
-    J = 1
-    H_XX =  kron(X, X, I(2), I(2)) + kron(I(2), X, X, I(2)) + kron(I(2), I(2), X, X) # + kron(X, I(2), I(2), X)
-    H_Z = kron(Z, I(2), I(2), I(2)) + kron(I(2), Z, I(2), I(2)) + kron(I(2), I(2), Z, I(2)) + kron(I(2), I(2), I(2), Z)
-    H = -J * H_XX - h * H_Z |> Matrix
-    e, psis = eigen(H)
-    e = e[1]
-    gs_exact = psis[:,1]
+#=function ED(h)=#
+    # Z = [0 1.0 ; 1 0]
+    # X = [1 0.0 ; 0 -1]
+    # J = 1
+    # H_XX =  kron(X, X, I(2), I(2)) + kron(I(2), X, X, I(2)) + kron(I(2), I(2), X, X) # + kron(X, I(2), I(2), X)
+    # H_Z = kron(Z, I(2), I(2), I(2)) + kron(I(2), Z, I(2), I(2)) + kron(I(2), I(2), Z, I(2)) + kron(I(2), I(2), I(2), Z)
+    # H = -J * H_XX - h * H_Z |> Matrix
+    # e, psis = eigen(H)
+    # e = e[1]
+    # gs_exact = psis[:,1]
 
-    EJ = gs_exact' * J * H_XX * gs_exact# / norm(gs_exact)
-    Eh = gs_exact' * h * H_Z * gs_exact # / norm(gs_exact)
+    # EJ = gs_exact' * J * H_XX * gs_exact# / norm(gs_exact)
+    # Eh = gs_exact' * h * H_Z * gs_exact # / norm(gs_exact)
 
 
-    M = 0.0
-    ##### Calculate the groundstate magnetization <m^2> in the Z direction
-    magnetization = 0
-    Dim = 2^N
-    for Ket = 0:Dim - 1  # Loop over Hilbert Space
-        SumSz = 0.
-        for SpinIndex = 0:N - 1  # Loop over spin index (base zero, stop one spin before the end of the chain)
-            Spin1 = 2 * ((Ket >> SpinIndex) & 1) - 1
-            SumSz += Spin1 # spin is +1 or -1
-            # print(Spin1," ")
+    # M = 0.0
+    # ##### Calculate the groundstate magnetization <m^2> in the Z direction
+    # magnetization = 0
+    # Dim = 2^N
+    # for Ket = 0:Dim - 1  # Loop over Hilbert Space
+        # SumSz = 0.
+        # for SpinIndex = 0:N - 1  # Loop over spin index (base zero, stop one spin before the end of the chain)
+            # Spin1 = 2 * ((Ket >> SpinIndex) & 1) - 1
+            # SumSz += Spin1 # spin is +1 or -1
+            # # print(Spin1," ")
+        # end
+        # # println(SumSz," ",GroundState[Ket+1])
+        # magnetization += SumSz * SumSz * gs_exact[Ket + 1]^2  # Don't forgot to square the coefficients...
+    # end
+    # M = magnetization / (N * N)
+    # return Eh + EJ, M
+#=end=#
+
+
+@testset "Z" begin
+    for L in [4, 6, 8]
+        for h in [0.5, 1.0, 2.45]
+            M = pairing(L, h)
+            logZ = TFIMSampler.logZ(M)
+            logZ_sum = log(sum(get_all_probs(M)[1]))
+            println(logZ)
+            println(logZ_sum)
+            @test logZ - logZ_sum  < 1e-6
         end
-        # println(SumSz," ",GroundState[Ket+1])
-        magnetization += SumSz * SumSz * gs_exact[Ket + 1]^2  # Don't forgot to square the coefficients...
     end
-    M = magnetization / (N * N)
-    return Eh + EJ, M
 end
+
     # display(gs_exact)
 # function test_ed(h)
 #     L = 4

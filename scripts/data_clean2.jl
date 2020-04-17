@@ -10,7 +10,7 @@ function clean(L;name="train", r=1, h=1.0)
 
     # Read old data
     h = round(h, digits=2)
-    dir = "/scratch/mbeach/nov22_tfim_data/L-$L/h-$h/"
+    dir = "/home/mbeach/nov22_tfim_data/L-$L/h-$h/"
 
     M = pairing(L, h)
     logZ = TFIMSampler.logZ(M)
