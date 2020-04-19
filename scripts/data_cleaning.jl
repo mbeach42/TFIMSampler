@@ -9,18 +9,19 @@ function clean(L)
 
         # Read old data
         h = round(h, digits=2)
-        dir = "/scratch/mbeach/nov22_tfim_data/L-$L/h-$h/"
+        # dir = "/scratch/mbeach/nov22_tfim_data/L-$L/h-$h/"
+        dir = "/scratch/mbeach/TFIM_samples/PBC/L-256/h-1.0/"
 
         M = pairing(L, h)
         # logZ = logdet(M)
         # @info "log Z is $logZ"
 
-        file = dir * "r-1.txt" 
+        file = dir * "run-1.txt" 
         train = readdlm(file)
         # @info "training set size :", size(train)
 
-        for r in 2:5
-            file = dir * "r-$r.txt" 
+        for r in 2:25
+            file = dir * "run-$r.txt" 
             train = vcat(train, readdlm(file))
         end
         @info "training set size :", size(train)
@@ -45,11 +46,11 @@ function clean(L)
         writedlm(dir2 * "logZ_train.txt", logZ)
 
         ### TEST DATA
-        file = dir * "r-11.txt" 
+        file = dir * "run-26.txt" 
         train = readdlm(file)
 
-        for r in 12:15
-            file = dir * "r-$r.txt" 
+        for r in 27:50
+            file = dir * "run-$r.txt" 
             train = vcat(train, readdlm(file))
         end
         @info "training set size :", size(train)
@@ -75,7 +76,8 @@ function clean(L)
 end
 
 clean(4)
-for L in [8,16, 32, 64, 128, 256, 512]
+
+for L in [256]
     println()
     clean(L)
 end

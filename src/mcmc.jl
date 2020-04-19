@@ -70,7 +70,7 @@ end
 function sample(;nrepeats=4, L = 4, h = 1.0, N = 100, file = false)
     nrepeats = 2 * L
     configs = single_sample(L=L, h=h, N=N, file=file)
-    for i in 1:nrepeats-1
+    @showprogress for i in 1:nrepeats-1
         configs = vcat(single_sample(L=L, h=h, N=N, file=file), configs)
     end
     return configs

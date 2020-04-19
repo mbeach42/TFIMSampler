@@ -1,14 +1,14 @@
 using TFIMSampler
 
-N = 10^4
+N = 10^3
 # Ls = 2 .^ collect(2:10)
 
-Ls = [4,8,16,32,64,128]
+Ls = [4,8,16,32,64,128, 256, 512]
 
 # hs = 0.1*collect(1:10)
 hs = [1.0]
 # hs = [1.0]
-repeats = [i for i in 1:20]
+repeats = [i for i in 1:100]
 
 arg = parse(Int, ARGS[1])
 
