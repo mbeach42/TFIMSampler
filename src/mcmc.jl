@@ -1,6 +1,3 @@
-using Random
-using StatsBase
-
 # TODO 
 # (1) faster updates with single determinant or matrix inverse
 # (2) monitor energy, magnetization, etc.
@@ -13,68 +10,51 @@ mutable struct DQMC
     invF::Matrix{Float64} # inverse Pfaffian
 end
 
-function pairing_function(L::Int, h::Float64)
-    F = zeros(2L, 2L)
-    E = k -> sqrt(1 + h^2 + 2h*cospi((2k+1)/L))
-    Cf(n, k) = 2/L * (h*cospi((2k+1)*n/L)) / E(k) + 2/L * (cospi((2k+1)*(n+1)/L)) / E(k)
-    getC = n -> reduce(+, [Cf(n, k) for k in 0:div(L-1, 2)]) |> real
-    Π(n) = [0 getC(n); -getC(-n) 0]
-    for n in 0:L-1
-        Πs = map(n -> Π(n), -n:L-n-1)
-        Πs = hcat(Πs...)
-        F[2n+1:2n+2, :] = Πs
-    end 
-    F = F[1:2:end, 2:2:end]
-    return F
-end
-
 function DQMC(L::Int, h::Float64)
-    F = pairing_function(L, h)
+    F = pairing(L, h)
     invF = inv(F)
-    DQMC(L, h, falses(L), F, invF)
+    if rand() > 0.5
+        init_x = falses(L)
+    else
+        init_x = trues(L)
+    end
+    DQMC(L, h, init_x, F, invF)
 end
 
-# function fast_update!(x::AbstractArray, F::Matrix, L::Int, h::Float64)
-    # x2 = copy(x)
-    # old_weight = F[x.>0, x.>0] |> det
-    # # r = sample(1:L, rand(1:L), replace = false)
-    # r = rand(1:L)
-    # # @. x2[r] = !x[r]
-    # x2[r] = !x[r]
-    # new_weight = F[x2.>0, x2.>0] |> det
-    # ratio = new_weight/old_weight
-
-    # B = F[x.>0,r]
-    # newratio = 1 + inv(F[x.>0, x.>0])[r,r]#B'*inv(F[x.>0, x.>0])*B
-
-    # println("old ratio - new ratio", ratio - newratio)
-
-    # if rand() < min(1, ratio)
-        # x .= x2
+function fast_update!(x::AbstractArray, F::Matrix, L::Int, h::Float64,
+                      old_weight::Float64)
+    # println(" ")
+    # display(x')
+    # r = sample(1:L, rand(1:L), replace = false)
+    r = rand(1:L, rand(2:2:L))
+    @. x[r] = !x[r]
+    new_weight = F[x .> 0, x .> 0] |> det
+    ratio = new_weight / old_weight
+    # if sum(x) > 0
+    # D = F[x .> 0, x .> 0]
+    # display(F[x .> 0, x .> 0])
+    # display(pinv(F[x .> 0, x .> 0]))
     # end
-# end
-
-function fast_update!(x::AbstractArray, F::Matrix, L::Int, h::Float64)
-    x2 = copy(x)
-    old_weight = F[x.>0, x.>0] |> det
-    r = rand(1:L)
-    @. x2[r] = !x[r]
-    new_weight = F[x2.>0, x2.>0] |> det
-    ratio = new_weight/old_weight
-    if rand() < min(1, ratio)
-        x .= x2
+    # newratio = 1 + inv(F[x .> 0, x .> 0])[r,r] * B' #* inv(F[x .> 0, x .> 0]) * B
+    # println("old ratio - new ratio", ratio - newratio)
+    if rand() > min(1, ratio)
+        @. x[r] = !x[r] # flip back
+        return old_weight
+    else
+        return new_weight
     end
 end
 
 function sweep!(x::AbstractArray, F::Matrix, L::Int, h::Float64)
-    for _ in 1:5*L
-        fast_update!(x, F, L, h)
+    old_weight = F[x .> 0, x .> 0] |> det
+    for _ in 1:2 * L
+      old_weight = fast_update!(x, F, L, h, old_weight)
     end
 end
 
-function run!(;L=4, h=1.0, N=100, file=false)
+function single_sample(;L = 4, h = 1.0, N = 100, file = false)
     model = DQMC(L, h)
-    configs = []
+    configs = [] #Vector{BitVector}
     @showprogress 1 "warming up..." for i in 1:N
         sweep!(model.x, model.F, model.L, model.h)
     end
@@ -87,12 +67,14 @@ function run!(;L=4, h=1.0, N=100, file=false)
             end
         end
     end
-    # Amps = countmap(configs) |> sort
-    # amps = normalize(Amps.vals)
-    # if file ≠ false
-        # writedlm(file * "-amps.txt", amps)
-    # end
-    return configs, zeros(1)
+    return configs
 end
 
-run!(N=1)
+function sample(;nrepeats=4, L = 4, h = 1.0, N = 100, file = false)
+    nrepeats = 2 * L
+    configs = single_sample(L=L, h=h, N=N, file=file)
+    # @showprogress for i in 1:nrepeats-1
+        configs = vcat(single_sample(L=L, h=h, N=N, file=file), configs)
+    # end
+    return configs
+end
