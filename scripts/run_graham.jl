@@ -22,12 +22,12 @@ println("r is $r")
 println("N is $N")
 
 # pre-compile once 
-@time configs = TFIMSampler.sample(L=2, h=1.0, N=1)
+@time configs = TFIMSampler.single_sample(L=2, h=2.0, N=1)
 
 # make directory if none exists
 h = round(h, digits=2)
-dir = "/scratch/mbeach/TFIM_samples/PBC/L-$L/h-$h/"
+dir = "/scratch/mbeach/TFIM_samples/PBC/h-$h/L-$L/"
 mkpath(dir)
 file = dir * "run-$r" 
 
-@time configs = TFIMSampler.sample(L=L, h=h, N=N, file=file)
+@time configs = TFIMSampler.single_sample(L=L, h=h, N=N, file=file)
