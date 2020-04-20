@@ -4,31 +4,22 @@ using LinearAlgebra
 
 function clean(L)
         h = 1.0
+        h = round(h, digits=2)
+        dir = "/scratch/mbeach/TFIM_samples/PBC/h-1.0/L-$L/"
+        dir2 = "/scratch/mbeach/cleaned_TFIM_samples/L-$L/"
+        mkpath(dir2)
         @info "L is $L"
         @info "h is $h"
 
-        # Read old data
-        h = round(h, digits=2)
-        # dir = "/scratch/mbeach/nov22_tfim_data/L-$L/h-$h/"
-        dir = "/scratch/mbeach/TFIM_samples/PBC/L-256/h-1.0/"
-
         M = pairing(L, h)
-        # logZ = logdet(M)
-        # @info "log Z is $logZ"
-
         file = dir * "run-1.txt" 
         train = readdlm(file)
-        # @info "training set size :", size(train)
-
-        for r in 2:25
+        for r in 2:50
             file = dir * "run-$r.txt" 
             train = vcat(train, readdlm(file))
         end
         @info "training set size :", size(train)
-        dir2 = "../new_tfim_data/L-$L/h-$h/"
-        mkpath(dir2)
         writedlm(dir2 * "data_train.txt", Int.(train))
-
         un = unique(train, dims=1)
         @info "unique configurations size :", size(un)
         
@@ -46,10 +37,10 @@ function clean(L)
         writedlm(dir2 * "logZ_train.txt", logZ)
 
         ### TEST DATA
-        file = dir * "run-26.txt" 
+        file = dir * "run-51.txt" 
         train = readdlm(file)
 
-        for r in 27:50
+        for r in 52:100
             file = dir * "run-$r.txt" 
             train = vcat(train, readdlm(file))
         end
@@ -67,7 +58,6 @@ function clean(L)
         @info "log Z is approx. $logZ"
         println("Sum of ps is ", sum(exp.(ps)))
         println("Sum of ps is ", sum(exp.(un_ps)))
-
         writedlm(dir2 * "unique_test.txt", Int.(un))
         writedlm(dir2 * "unique_logps_test.txt", un_ps)
         writedlm(dir2 * "logps_test.txt", ps)
@@ -77,7 +67,7 @@ end
 
 clean(4)
 
-for L in [256]
-    println()
+for L in [4,8,16,32,64,128,256]
+    println(L)
     clean(L)
 end
