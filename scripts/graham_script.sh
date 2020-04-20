@@ -2,9 +2,9 @@
 #SBATCH --account=rrg-rgmelko-ab
 #SBATCH --ntasks=1
 #SBATCH --mem=4GB
-#SBATCH --time=2:30:00
+#SBATCH --time=18:00:00
 #SBATCH --job-name=tfim_data
-#SBATCH --array=1-300
+#SBATCH --array=1-100
 #SBATCH --output=tfim_data.log
 
 module load nixpkgs/16.09 gcc/7.3.0 julia

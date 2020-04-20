@@ -4,7 +4,9 @@ N = 10^4
 h = 1.0
 # Ls = [4, 8, 16]
 # Ls = [32, 64, 128]
-Ls = [256, 512, 1024]
+Ls = [512]#, 1024] 
+# 512 takes about 10 hours for 10^4 samples (5h warm up and 5h run)
+# 1024 takes about 
 repeats = [i for i in 1:100]
 
 arg = parse(Int, ARGS[1])

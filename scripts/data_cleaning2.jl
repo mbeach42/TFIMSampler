@@ -17,6 +17,7 @@ function clean(L; name="train", r=1, R=50)
     M = pairing(L, h)
     logZ = TFIMSampler.logZ(M)
     @info "log Z is $logZ"
+    @info "Z is $(exp(logZ))"
 
     file = dir * "run-$r.txt" 
     train = readdlm(file)
@@ -38,9 +39,10 @@ function clean(L; name="train", r=1, R=50)
     un_ps = [un_ps[i] - logZ for i in 1:size(un,1)]
     @info "Sum of ps is $(sum(exp.(un_ps)))"
 
+    writedlm(dir2 * "logZ_$name.txt", logZ)
     writedlm(dir2 * "configs_$name.txt", Int.(train))
-    writedlm(dir2 * "logps_$name.txt", ps)
     writedlm(dir2 * "unique_configs_$name.txt", Int.(un))
+    writedlm(dir2 * "logps_$name.txt", ps)
     writedlm(dir2 * "unique_logps_$name.txt", un_ps)
 end
 
