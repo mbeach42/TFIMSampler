@@ -48,11 +48,15 @@ end
 function sweep!(x::AbstractArray, F::Matrix, L::Int, h::Float64)
     old_weight = F[x .> 0, x .> 0] |> det
     for _ in 1:2 * L
-      old_weight = fast_update!(x, F, L, h, old_weight)
+        old_weight = fast_update!(x, F, L, h, old_weight)
     end
 end
 
 function single_sample(;L = 4, h = 1.0, N = 100, file = false)
+    if file != false
+        println("Removing file", file)
+        Base.Filesystem.rm(file, force=true)
+    end
     model = DQMC(L, h)
     configs = [] #Vector{BitVector}
     @showprogress 1 "warming up..." for i in 1:N
