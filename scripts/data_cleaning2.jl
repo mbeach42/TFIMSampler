@@ -2,12 +2,13 @@ using DelimitedFiles
 using StatsFuns
 using TFIMSampler
 using LinearAlgebra
+using ProgressMeter
 
 function clean(L; name="train", r=1, R=50)
     h = 1.0
     h = round(h, digits=2)
     dir = "/scratch/mbeach/TFIM_samples/PBC/h-1.0/L-$L/"
-    dir2 = "/scratch/mbeach/cleaned_TFIM_samples/L-$L/"
+    dir2 = "/scratch/mbeach/new_new_cleaned_TFIM_samples/L-$L/$name/"
     Base.Filesystem.rm(dir2, force=true, recursive=true)
     mkpath(dir2)
 
@@ -21,9 +22,9 @@ function clean(L; name="train", r=1, R=50)
 
     file = dir * "run-$r.txt" 
     train = readdlm(file)
-    # @info "Original training set size : $(size(train))"
-    for i in r+1:R
-        file = dir * "r-$i.txt" 
+    @info "Original training set size : $(size(train))"
+    @showprogress for i in r+1:R
+        file = dir * "run-$i.txt" 
         train = vcat(train, readdlm(file))
     end
 
@@ -49,7 +50,9 @@ end
 clean(4, name="train", r=1, R=50)
 clean(4, name="test", r=51, R=100)
 
-for L in [8, 16, 32, 64, 128, 256]
+# for L in [8, 16, 32, 64, 128, 256]
+# for L in [8, 16, 32, 64, 128, 256, 512]
+for L in [512]
     @info L
     clean(L, name="train", r=1, R=50)
     clean(L, name="test", r=51, R=100)
