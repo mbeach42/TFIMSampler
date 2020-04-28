@@ -13,10 +13,13 @@ end
 function DQMC(L::Int, h::Float64)
     F = pairing(L, h)
     invF = inv(F)
-    if rand() > 0.5
+    r = rand()
+    if r < 0.33
         init_x = falses(L)
-    else
+    elseif r < 0.67
         init_x = trues(L)
+    else
+        init_x = bitrand(L)
     end
     DQMC(L, h, init_x, F, invF)
 end
@@ -62,6 +65,10 @@ end
 
 function sample(;nrepeats = 4, L = 4, h = 1.0, N = 100, file = false)
     nrepeats = 2 * L
+    if file != false
+        println("Removing file", file)
+        Base.Filesystem.rm(file, force = true)
+    end
     configs = single_sample(L = L, h = h, N = N, file = file)
     for i in 1:nrepeats - 1
         configs = vcat(single_sample(L = L, h = h, N = N, file = file), configs)

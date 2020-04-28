@@ -19,7 +19,7 @@ println("r is $r")
 println("N is $N")
 
 # pre-compile once 
-@time configs = TFIMSampler.single_sample(L = 2, h = 2.0, N = 1)
+@time configs, logZ = TFIMSampler.sample(L = 2, h = h, N = 4, file = false)
 
 # make directory if none exists
 h = round(h, digits = 2)
@@ -27,4 +27,4 @@ dir = "/scratch/mbeach/april_28_TFIM_samples/PBC/h-$h/L-$L/"
 mkpath(dir)
 file = dir * "run-$r" 
 
-@time configs = TFIMSampler.single_sample(L = L, h = h, N = N, file = file)
+@time configs, logZ = TFIMSampler.sample(L = L, h = h, N = N, file = file)
