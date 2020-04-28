@@ -1,8 +1,9 @@
 using TFIMSampler
 
 L = parse(Int, ARGS[1])
-h = parse(Float64, ARGS[2])
-N = parse(Int, ARGS[3])
+# h = parse(Float64, ARGS[2])
+h = 1.0
+N = parse(Int, ARGS[2])
 
 println("L is $L")
 println("h is $h")
@@ -17,4 +18,4 @@ dir = "../new_data/"
 mkpath(dir)
 file = dir * "L-$L-h-$h" 
 
-@time configs, logZ = TFIMSampler.sample(L=L, h=h, N=N, file=file)
+@time configs, logZ = TFIMSampler.sample(L = L, h = h, N = N, file = file)
