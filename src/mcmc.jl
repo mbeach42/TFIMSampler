@@ -48,14 +48,14 @@ end
 function single_sample(;L = 4, h = 1.0, N = 100, file = false)
     model = DQMC(L, h)
     configs = [] # Vector{BitVector}
-    @showprogress 1 "warming up..." for i in 1:N
+    @showprogress 1 "warming up..." for i in 1:10*N
         sweep!(model.x, model.F, model.L, model.h)
     end
     @showprogress 1 "running MC..." for i in 1:N
         sweep!(model.x, model.F, model.L, model.h)
         push!(configs, copy(model.x))
         if file ≠ false
-            open(file * ".txt", "a") do f
+            open(file, "a") do f
                 writedlm(f, Int.(model.x'))
             end
         end
@@ -64,13 +64,13 @@ function single_sample(;L = 4, h = 1.0, N = 100, file = false)
 end
 
 function sample(;nrepeats = 4, L = 4, h = 1.0, N = 100, file = false)
-    nrepeats = 2 * L
+    nrepeats = 10
     if file != false
         println("Removing file", file)
         Base.Filesystem.rm(file, force = true)
     end
     configs = single_sample(L = L, h = h, N = N, file = file)
-    for i in 1:nrepeats - 1
+    for i in 1:nrepeats-1
         configs = vcat(single_sample(L = L, h = h, N = N, file = file), configs)
     end
     return configs
