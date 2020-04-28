@@ -48,12 +48,12 @@ function clean(L; name = "train", r = 1, R = 50)
     writedlm(dir2 * "unique_logps_$name.txt", un_ps)
 end
 
-clean(4, name = "train", r = 1, R = 50)
-clean(4, name = "test", r = 51, R = 100)
+# clean(4, name = "train", r = 1, R = 50)
+# clean(4, name = "test", r = 51, R = 100)
 
 # for L in [8, 16, 32, 64, 128, 256]
 # for L in [8, 16, 32, 64, 128, 256, 512]
-for L in [512]
+for L in [16]
     @info L
     clean(L, name = "train", r = 1, R = 50)
     clean(L, name = "test", r = 51, R = 100)

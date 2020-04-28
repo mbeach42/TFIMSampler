@@ -1,8 +1,9 @@
 using TFIMSampler
 
-N = 10^4
+N = 10^3
 h = 1.0
 Ls = [16]
+# Ls = [4, 8, 16, 32, 64, 128]
 # Ls = [32, 64, 128]
 # Ls = [512]#, 1024] 
 # 512 takes about 10 hours for 10^4 samples (5h warm up and 5h run)
@@ -25,6 +26,7 @@ println("N is $N")
 h = round(h, digits = 2)
 dir = "/scratch/mbeach/april_28_TFIM_samples/PBC/h-$h/L-$L/"
 mkpath(dir)
-file = dir * "run-$r" 
+file = dir * "run-$r.txt" 
+
 
 @time configs, logZ = TFIMSampler.sample(L = L, h = h, N = N, file = file)

@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --account=rrg-rgmelko-ab
 #SBATCH --ntasks=1
-#SBATCH --mem=2GB
+#SBATCH --mem=4GB
 #SBATCH --time=1:00:00
 #SBATCH --job-name=tfim_data
 #SBATCH --array=1-100
