@@ -7,8 +7,9 @@ using ProgressMeter
 function clean(L; name = "train", r = 1, R = 50)
     h = 1.0
     h = round(h, digits = 2)
-    dir = "/scratch/mbeach/TFIM_samples/PBC/h-1.0/L-$L/"
-    dir2 = "/scratch/mbeach/new_new_cleaned_TFIM_samples/L-$L/$name/"
+    # dir = "/scratch/mbeach/TFIM_samples/PBC/h-1.0/L-$L/"
+    dir = "/scratch/mbeach/april_28_TFIM_samples/PBC/h-$h/L-$L/"
+    dir2 = "/scratch/mbeach/april_28_cleaned/L-$L/$name/"
     Base.Filesystem.rm(dir2, force = true, recursive = true)
     mkpath(dir2)
 

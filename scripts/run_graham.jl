@@ -2,7 +2,7 @@ using TFIMSampler
 
 N = 10^4
 h = 1.0
-Ls = [4, 8, 16]
+Ls = [16]
 # Ls = [32, 64, 128]
 # Ls = [512]#, 1024] 
 # 512 takes about 10 hours for 10^4 samples (5h warm up and 5h run)
