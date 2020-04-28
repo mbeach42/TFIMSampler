@@ -22,12 +22,11 @@ function DQMC(L::Int, h::Float64)
 end
 
 function fast_update!(x::AbstractArray, F::Matrix, L::Int, h::Float64, old_weight::Float64)
-    
     r = rand(1:L, rand(2:2:L))
     @. x[r] = !x[r]
     new_weight = F[x .> 0, x .> 0] |> det
     ratio = new_weight / old_weight
-
+    
     if rand() > min(1, ratio)
         @. x[r] = !x[r] # flip back
         return old_weight
